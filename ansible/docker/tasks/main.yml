@@ -1,2 +1,59 @@
 ---
 # tasks file for docker
+- name: Install apt for docker for Ubuntu
+  apt:
+    update_cache: yes
+    name:
+      - gnupg2
+      - wget
+      - vim
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+    state: present
+  when:
+    - ansible_distribution == "Ubuntu"
+    - ansible_distribution_version == "20.04"
+
+- name: Install repo pestgresql and key for Ubuntu
+  shell:  |
+      source /etc/os-release && \
+      curl -fsSL https://download.docker.com/linux/${ID}/gpg | sudo apt-key add && \
+      echo "deb [arch=amd64] https://download.docker.com/linux/${ID} ${VERSION_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/docker.list
+  args: 
+    executable: /bin/bash
+  when:
+    - ansible_distribution == "Ubuntu"
+    - ansible_distribution_version == "20.04"
+
+- name: Install Docker Ubuntu
+  apt:
+    update_cache: yes
+    pkg:
+      - docker-ce
+      - docker-ce-cli 
+      - containerd.io
+  when:
+    - ansible_distribution == "Ubuntu"
+    - ansible_distribution_version == "20.04"
+
+- name: Install repo Centos8
+  shell: dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+  when:
+    - ansible_distribution == "CentOS"
+
+- name: Install latest version docker-ce
+  ansible.builtin.dnf:
+    name:
+      - docker-ce
+    state: latest
+  when:
+    - ansible_distribution == "CentOS"
+
+- name: Enable Docker service
+  service:
+     name: docker
+     enabled: yes
+
+

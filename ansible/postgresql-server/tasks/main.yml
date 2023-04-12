@@ -1,2 +1,39 @@
 ---
 # tasks file for postgresql-server
+- name: Install gnupg2 wget
+  apt:
+    update_cache: yes
+    name:
+      - gnupg2
+      - wget
+      - vim
+    state: present
+
+- name: Install repo pestgresql
+  shell: sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+  args: 
+    executable: /bin/bash
+
+- name: Install repo pestgresql
+  shell: wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+  args: 
+    executable: /bin/bash
+
+- name: Install postgresql
+  apt:
+    update_cache: yes
+    name:
+      - "{{postresql_version}}"
+    state: present
+
+- name: Start and enable postgesql
+  service:
+    name: postgresql
+    state: started
+    enabled: true
+
+- name: Initialize PostgreSQL
+  shell: "{{ postgresql_bin_path }}/initdb -D {{ postgresql_data_dir }}"
+  become: true
+  become_user: postgres
+  notify: restart postgresql

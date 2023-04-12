@@ -1,6 +1,15 @@
 [web]
-vm1  ansible_host=158.160.41.146 ansible_user=vinkin ansibli_ssh_private_key_file=/home/sorokinav/.ssh/vinkin
+vm1  ansible_host=localhost ansible_user=ansible ansibli_ssh_private_key_file=/home/ansible/.ssh/vinkin
 
 [app]
-vm2  ansible_host=51.250.77.47 ansible_user=vinkin ansibli_ssh_private_key_file=/home/sorokinav/.ssh/vinkin
-vm3  ansible_host=158.160.39.166 ansible_user=vinkin ansibli_ssh_private_key_file=/home/sorokinav/.ssh/vinkin
+vm2  ansible_host=192.168.10.101 ansible_user=ansible ansibli_ssh_private_key_file=/home/ansible/.ssh/vinkin
+vm3  ansible_host=192.168.10.102 ansible_user=ansible ansibli_ssh_private_key_file=/home/ansible/.ssh/vinkin
+
+[database]
+vm1  ansible_host=localhost ansible_user=ansible ansibli_ssh_private_key_file=/home/ansible/.ssh/vinkin
+
+[database:vars]
+postresql_version=postgresql-14
+postgresql_bin_path=/usr/lib/postgresql/14/bin
+postgresql_data_dir=/var/lib/postgresql/14/main
+ansible_ssh_pipelining=true

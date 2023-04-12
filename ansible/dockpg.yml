@@ -1,0 +1,15 @@
+- name: Install docker
+  hosts: app
+  gather_facts: yes
+  become: 'yes'
+
+  roles:
+    - docker
+
+- name: Install postgesql
+  hosts: database
+  gather_facts: yes
+  become: 'yes'
+
+  roles:
+    - postgresql-server
