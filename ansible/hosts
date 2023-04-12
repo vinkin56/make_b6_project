@@ -1,0 +1,6 @@
+[web]
+vm1  ansible_host=158.160.41.146 ansible_user=vinkin ansibli_ssh_private_key_file=/home/sorokinav/.ssh/vinkin
+
+[app]
+vm2  ansible_host=51.250.77.47 ansible_user=vinkin ansibli_ssh_private_key_file=/home/sorokinav/.ssh/vinkin
+vm3  ansible_host=158.160.39.166 ansible_user=vinkin ansibli_ssh_private_key_file=/home/sorokinav/.ssh/vinkin
