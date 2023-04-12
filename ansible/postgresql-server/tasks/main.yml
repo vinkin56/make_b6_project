@@ -35,5 +35,5 @@
 - name: Initialize PostgreSQL
   shell: "{{ postgresql_bin_path }}/initdb -D {{ postgresql_data_dir }}"
   become: true
-  become_user: postgres
+  become_user: ansible
   notify: restart postgresql

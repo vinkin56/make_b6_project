@@ -14,7 +14,6 @@
     state: present
   when:
     - ansible_distribution == "Ubuntu"
-    - ansible_distribution_version == "20.04"
 
 - name: Install repo pestgresql and key for Ubuntu
   shell:  |
@@ -25,7 +24,6 @@
     executable: /bin/bash
   when:
     - ansible_distribution == "Ubuntu"
-    - ansible_distribution_version == "20.04"
 
 - name: Install Docker Ubuntu
   apt:
@@ -36,7 +34,6 @@
       - containerd.io
   when:
     - ansible_distribution == "Ubuntu"
-    - ansible_distribution_version == "20.04"
 
 - name: Install repo Centos8
   shell: dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
