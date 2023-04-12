@@ -1,0 +1,120 @@
+---
+- name: Install ansible and add user key in web server
+  hosts: web
+  gather_facts: yes
+  become: 'yes'
+
+  tasks:
+    
+    - name: Add ansible stable repository from PPA and install its signing key on Ubuntu target
+      apt_repository:
+        repo: ppa:ansible/ansible
+        update_cache: true
+
+    - name: Install ansible
+      apt:
+        update_cache: yes
+        name: ansible
+        state: latest
+
+    - name: Install git
+      apt:
+        name: git
+        state: present
+        update_cache: yes
+
+    - name: Install openssh-server
+      apt:
+        name: openssh-server
+        state: present
+        update_cache: yes
+
+    - name: Add user ansible
+      user:
+        force: true
+        name: ansible
+        create_home: true
+        shell: /bin/bash
+
+    - name: Add group ansible
+      group:
+        name: ansible
+        state: present
+
+    - name: Add user ansible in group ansible
+      user:
+        name: ansible
+        groups: ansible
+        append: yes
+
+    - name: insert authorized key
+      ansible.posix.authorized_key:
+        user: ansible
+        state: present
+        key: '{{ lookup(''file'', ''/home/sorokinav/.ssh/vinkin.pub'') }}'
+
+    - name: Add ansible to sudoers
+      lineinfile:
+        dest: /etc/sudoers
+        line: "ansible ALL=(ALL)  NOPASSWD: ALL"
+        validate: 'visudo -cf %s'
+
+    - name: copy private key
+      copy:
+        src: ~/.ssh/vinkin 
+        dest: /home/ansible/.ssh/vinkin
+        owner: ansible
+        group: ansible
+        mode: '0600'
+
+    - name: copy public key
+      copy:
+        src: ~/.ssh/vinkin.pub 
+        dest: /home/ansible/.ssh/vinkin.pub
+        owner: ansible
+        group: ansible
+        mode: '0600'
+
+    - name: add ssh key
+      remote_user: ansible
+      shell: eval `ssh-agent -s`; ssh-add -k /home/ansible/.ssh/vinkin
+      args: 
+        executable: /bin/bash
+
+- name: Add user and key in app servers
+  hosts: app
+  gather_facts: yes
+  become: 'yes'
+
+  tasks:
+
+    - name: Add user ansible
+      user:
+        force: true
+        name: ansible
+        create_home: true
+        shell: /bin/bash
+
+    - name: Add group ansible
+      group:
+        name: ansible
+        state: present
+
+    - name: Add user ansible in group ansible
+      user:
+        name: ansible
+        groups: ansible
+        append: yes
+
+    - name: insert authorized key
+      ansible.posix.authorized_key:
+        user: ansible
+        state: present
+        key: '{{ lookup(''file'', ''/home/sorokinav/.ssh/vinkin.pub'') }}'
+
+    - name: Add ansible to sudoers
+      lineinfile:
+        dest: /etc/sudoers
+        line: "ansible ALL=(ALL)  NOPASSWD: ALL"
+        validate: 'visudo -cf %s'
+
