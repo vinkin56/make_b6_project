@@ -33,7 +33,7 @@
     enabled: true
 
 - name: Initialize PostgreSQL
-  shell: "{{ postgresql_bin_path }}/initdb -D {{ postgresql_data_dir }}"
+  shell: "postgresql-setup {{ postgresql_bin_path }}/initdb -D {{ postgresql_data_dir }}"
   become: true
-  become_user: ansible
+  become_user: postgres
   notify: restart postgresql
